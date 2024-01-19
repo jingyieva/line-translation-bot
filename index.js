@@ -2,19 +2,19 @@
 const line = require('@line/bot-sdk');
 const express = require('express');
 
-const CHANNEL_ACCESS_TOKEN = "vRj0MRLUcnfDF9qVmdvogwZlqTiK2nW05VeWiR8Qyb4lM7pkzVqHJaJyzYHQZPkW/w3ufgiav31hK2LZ4/GloyucKxiyFNM69Oxdl66viD471TFIhZMxFR6VGAGgdrVWfhic3oki5LchGwYJvs/mSQdB04t89/1O/w1cDnyilFU=";
-const CHANNEL_SECRET = "77ce7125f923f140dd27db2397395570";
-
-
 // create LINE SDK config from env variables
+const CHANNEL_ACCESS_TOKEN = "vRj0MRLUcnfDF9qVmdvogwZlqTiK2nW05VeWiR8Qyb4lM7pkzVqHJaJyzYHQZPkW/w3ufgiav31hK2LZ4/GloyucKxiyFNM69Oxdl66viD471TFIhZMxFR6VGAGgdrVWfhic3oki5LchGwYJvs/mSQdB04t89/1O/w1cDnyilFU=";
+const CHANNEL_SECRET = "b111f809e69fcd8961a60372f8e370ec";
 const config = {
+  // channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
+  // channelSecret: process.env.CHANNEL_SECRET,
   channelAccessToken: CHANNEL_ACCESS_TOKEN,
   channelSecret: CHANNEL_SECRET,
 };
 
 // create LINE SDK client
 const client = new line.messagingApi.MessagingApiClient({
-  channelAccessToken: CHANNEL_ACCESS_TOKEN
+  channelAccessToken: config.channelAccessToken
 });
 
 // create Express app
@@ -23,7 +23,7 @@ const app = express();
 
 // register a webhook handler with middleware
 // about the middleware, please refer to doc
-app.post('/callback', line.middleware(config), (req, res) => {
+app.post('/translate', line.middleware(config), (req, res) => {
   Promise
     .all(req.body.events.map(handleEvent))
     .then((result) => res.json(result))
