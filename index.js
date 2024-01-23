@@ -1,15 +1,19 @@
 
 const line = require('@line/bot-sdk');
+// const path = require('path')
 const express = require('express');
-
+// const dotenv = require('dotenv');
+// dotenv.config({ path: './.env', override: true });
+// // dotenv.config();
+// console.log(process.env)
 // create LINE SDK config from env variables
-const CHANNEL_ACCESS_TOKEN = "vRj0MRLUcnfDF9qVmdvogwZlqTiK2nW05VeWiR8Qyb4lM7pkzVqHJaJyzYHQZPkW/w3ufgiav31hK2LZ4/GloyucKxiyFNM69Oxdl66viD471TFIhZMxFR6VGAGgdrVWfhic3oki5LchGwYJvs/mSQdB04t89/1O/w1cDnyilFU=";
-const CHANNEL_SECRET = "b111f809e69fcd8961a60372f8e370ec";
+// const CHANNEL_ACCESS_TOKEN = "vRj0MRLUcnfDF9qVmdvogwZlqTiK2nW05VeWiR8Qyb4lM7pkzVqHJaJyzYHQZPkW/w3ufgiav31hK2LZ4/GloyucKxiyFNM69Oxdl66viD471TFIhZMxFR6VGAGgdrVWfhic3oki5LchGwYJvs/mSQdB04t89/1O/w1cDnyilFU=";
+// const CHANNEL_SECRET = "b111f809e69fcd8961a60372f8e370ec";
 const config = {
-  // channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
-  // channelSecret: process.env.CHANNEL_SECRET,
-  channelAccessToken: CHANNEL_ACCESS_TOKEN,
-  channelSecret: CHANNEL_SECRET,
+  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
+  channelSecret: process.env.CHANNEL_SECRET,
+  // channelAccessToken: CHANNEL_ACCESS_TOKEN,
+  // channelSecret: CHANNEL_SECRET,
 };
 
 // create LINE SDK client
