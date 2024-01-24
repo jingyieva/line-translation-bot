@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon -r dotenv/config ."
   },
+  "type": "module",
   "author": "Eva Wu",
   "license": "ISC",
   "dependencies": {
