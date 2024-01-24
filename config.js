@@ -34,3 +34,7 @@ export const LINE_CHANNEL_CONFIG = {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
     channelSecret: process.env.CHANNEL_SECRET,
 }
+
+export const TRANSLATE_AUTH_TOKEN = {
+    deepL: process.env.DEEPL_AUTH_TOKEN
+}
