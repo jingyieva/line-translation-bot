@@ -1,6 +1,6 @@
 import * as deepl from 'deepl-node';
 
-import { TRANSLATE_AUTH_TOKEN } from '../constants/index.js';
+import { TRANSLATE_AUTH_TOKEN } from '#constants/index.js';
 
 const translator = new deepl.Translator(TRANSLATE_AUTH_TOKEN.deepL);
 

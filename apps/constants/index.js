@@ -4,7 +4,8 @@ export const TRANSLATE_LANG_MAP = {
     "DA": "Danish",
     "DE": "German",
     "EL": "Greek",
-    "EN": "English",
+    "EN-GB": "English (British)",
+    "EN-US": "English (American)",
     "ES": "Spanish",
     "ET": "Estonian",
     "FI": "Finnish",
@@ -37,4 +38,10 @@ export const LINE_CHANNEL_CONFIG = {
 
 export const TRANSLATE_AUTH_TOKEN = {
     deepL: process.env.DEEPL_AUTH_TOKEN
+}
+
+export const MSG_KEYWORD_LIST = {
+    LANGUAGE: '/lang',
+    USAGE: '/usage',
+    HELP: '/help',
 }

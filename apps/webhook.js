@@ -1,8 +1,8 @@
 import Express from 'express';
 
-import { client as lineClient, lineMiddleware } from './utils/lineBot.js'
-import { translate, checkTranslationUsage } from './utils/translation.js'
-import { LINE_CHANNEL_CONFIG } from './constants/index.js';
+import { client as lineClient, lineMiddleware } from '#utils/lineBot.js'
+import { translate, checkTranslationUsage } from '#utils/translation.js'
+import { LINE_CHANNEL_CONFIG, MSG_KEYWORD_LIST } from '#constants/index.js';
 
 const apiWebhook = Express.Router();
 
@@ -28,13 +28,24 @@ async function handleEvent(event) {
         return Promise.resolve(null);
     }
 
-    if (event.message.text === "/usage") {
+    // check usage
+    if (event.message.text === MSG_KEYWORD_LIST.USAGE) {
         const usageMsg = await checkTranslationUsage();
 
         return await lineClient.replyMessage({
             replyToken: event.replyToken,
             messages: [{ type: 'text', text: usageMsg }],
         });
+    }
+
+    // check available language code
+    if (event.message.text === MSG_KEYWORD_LIST.LANGUAGE) {
+        // TODO
+    }
+
+    // get help
+    if (event.message.text === MSG_KEYWORD_LIST.HELP) {
+        // TODO
     }
 
     const _text = await translate(event.message.text)

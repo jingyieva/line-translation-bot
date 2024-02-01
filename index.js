@@ -1,7 +1,7 @@
 
 import Express from 'express';
 // api router
-import apiWebhook from './apps/webhook.js';
+import apiWebhook from '#webhook.js';
 
 const app = Express();
 

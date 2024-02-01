@@ -18,5 +18,10 @@
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.0"
+  },
+  "imports": {
+    "#*": "./apps/*",
+    "#constants/*": "./apps/constants/*",
+    "#utils/*":  "./apps/utils/*"
   }
 }

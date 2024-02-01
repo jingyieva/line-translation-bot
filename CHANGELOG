@@ -1,0 +1,8 @@
+- 2023.12.29
+    - Initialize Project.
+
+- 2024.01.24
+    - New feature Release: translate content from user's input in Line (Currently translate to English only).
+
+- 2024.01.25
+    - Add feature Release: Support keyword query `/usage` for checking current translation usage.
