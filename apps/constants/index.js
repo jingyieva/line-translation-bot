@@ -37,8 +37,11 @@ export const LINE_CHANNEL_CONFIG = {
 }
 
 export const TRANSLATE_AUTH_TOKEN = {
-    deepL: process.env.DEEPL_AUTH_TOKEN
+    deepL: process.env.DEEPL_AUTH_TOKEN,
+    google: process.env.GOOGLE_API_KEY,
 }
+
+export const GOOGLE_PROJECT_ID = process.env.GOOGLE_PROJ_ID;
 
 export const MSG_KEYWORD_LIST = {
     LANGUAGE: '/lang',

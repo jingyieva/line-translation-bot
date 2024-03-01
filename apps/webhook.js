@@ -1,7 +1,7 @@
 import Express from 'express';
 
 import { client as lineClient, lineMiddleware } from '#utils/lineBot.js'
-import { translate, checkTranslationUsage } from '#utils/translation.js'
+import { translate, getSupportLangs } from '#utils/translate.js'
 import { LINE_CHANNEL_CONFIG, MSG_KEYWORD_LIST } from '#constants/index.js';
 
 const apiWebhook = Express.Router();
@@ -30,17 +30,22 @@ async function handleEvent(event) {
 
     // check usage
     if (event.message.text === MSG_KEYWORD_LIST.USAGE) {
-        const usageMsg = await checkTranslationUsage();
+        // const usageMsg = await checkTranslationUsage();
 
-        return await lineClient.replyMessage({
-            replyToken: event.replyToken,
-            messages: [{ type: 'text', text: usageMsg }],
-        });
+        // return await lineClient.replyMessage({
+        //     replyToken: event.replyToken,
+        //     messages: [{ type: 'text', text: usageMsg }],
+        // });
     }
 
     // check available language code
     if (event.message.text === MSG_KEYWORD_LIST.LANGUAGE) {
         // TODO
+        const languages = await getSupportLangs();
+        return await lineClient.replyMessage({
+            replyToken: event.replyToken,
+            messages: [{ type: 'text', text: JSON.stringify(languages) }],
+        });
     }
 
     // get help
@@ -48,11 +53,11 @@ async function handleEvent(event) {
         // TODO
     }
 
-    const _text = await translate(event.message.text)
+    const res = await translate({ text: event.message.text })
     // use reply API
     return await lineClient.replyMessage({
         replyToken: event.replyToken,
-        messages: [{ type: 'text', text: _text }],
+        messages: [{ type: 'text', text: res.text }],
     });
 }
 
