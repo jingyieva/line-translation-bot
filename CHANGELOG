@@ -6,3 +6,8 @@
 
 - 2024.01.25
     - Add feature Release: Support keyword query `/usage` for checking current translation usage.
+
+- 2024.03.01
+    - Replace the main translation service with **Google Translation** from DeepL
+    - Remove `/usage` keyword
+    - Add `/lang` keyword for checking supporting translation language
