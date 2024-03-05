@@ -48,3 +48,5 @@ export const MSG_KEYWORD_LIST = {
     USAGE: '/usage',
     HELP: '/help',
 }
+
+export const REDIS_ALIVE_SECONDS = 60;
