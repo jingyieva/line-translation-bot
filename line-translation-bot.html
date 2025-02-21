@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html lang="zh-TW">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>機器人翻譯 Eva 圖片</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px;
+        background-color: #FAFAFA;
+      }
+
+      canvas {
+        border: 1px solid #ccc;
+        background-color: #FFF;
+      }
+
+      button {
+        margin-top: 15px;
+        padding: 8px 16px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="myCanvas" width="400" height="400"></canvas>
+    <button id="downloadBtn">下載 PNG</button>
+    <script>
+      // 取得 Canvas 及其繪圖上下文
+      const canvas = document.getElementById('myCanvas');
+      const ctx = canvas.getContext('2d');
+
+      // 清空畫布
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // 畫布背景：使用線性漸層增添活潑感
+        const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        bgGradient.addColorStop(0, '#B3E5FC');  // 淺藍
+        bgGradient.addColorStop(1, '#E1F5FE');  // 更淺藍
+        ctx.fillStyle = bgGradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // -------------------------
+        // 繪製活潑的機器人
+        // -------------------------
+        // 機器人頭部：圓角矩形
+        const headX = 130, headY = 80, headWidth = 140, headHeight = 140, radius = 15;
+        ctx.fillStyle = '#90A4AE';
+        function roundRect(ctx, x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        }
+        ctx.strokeStyle = '#546E7A';
+        roundRect(ctx, headX, headY, headWidth, headHeight, radius);
+
+        // 眼睛：添加彩色圓形與眼珠
+        const eyeRadius = 12;
+        // 左眼
+        ctx.beginPath();
+        ctx.arc(headX + headWidth * 0.3, headY + headHeight * 0.4, eyeRadius, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFF';
+        ctx.fill();
+        ctx.stroke();
+        // 右眼
+        ctx.beginPath();
+        ctx.arc(headX + headWidth * 0.7, headY + headHeight * 0.4, eyeRadius, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFF';
+        ctx.fill();
+        ctx.stroke();
+        // 眼珠
+        ctx.fillStyle = '#FF7043';
+        ctx.beginPath();
+        ctx.arc(headX + headWidth * 0.3, headY + headHeight * 0.4, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(headX + headWidth * 0.7, headY + headHeight * 0.4, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 微笑的嘴巴
+        ctx.strokeStyle = '#D32F2F';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(headX + headWidth / 2, headY + headHeight * 0.65, 30, 0, Math.PI, false);
+        ctx.stroke();
+        ctx.lineWidth = 1;
+
+        // 天線：增添彩色效果
+        ctx.strokeStyle = '#546E7A';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        const antennaX = headX + headWidth / 2;
+        const antennaYStart = headY;
+        const antennaYEnd = headY - 40;
+        ctx.moveTo(antennaX, antennaYStart);
+        ctx.lineTo(antennaX, antennaYEnd);
+        ctx.stroke();
+        // 天線頂端的小圓
+        ctx.fillStyle = '#FFCA28';
+        ctx.beginPath();
+        ctx.arc(antennaX, antennaYEnd, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.lineWidth = 1;
+
+        // 手臂：增加簡單線條作為裝飾
+        ctx.strokeStyle = '#546E7A';
+        // 左手臂
+        ctx.beginPath();
+        ctx.moveTo(headX, headY + headHeight * 0.6);
+        ctx.lineTo(headX - 40, headY + headHeight * 0.6 - 20);
+        ctx.stroke();
+        // 右手臂
+        ctx.beginPath();
+        ctx.moveTo(headX + headWidth, headY + headHeight * 0.6);
+        ctx.lineTo(headX + headWidth + 40, headY + headHeight * 0.6 - 20);
+        ctx.stroke();
+
+        // -------------------------
+        // 繪製翻譯元素：活潑雙向箭頭
+        // -------------------------
+        ctx.strokeStyle = '#00897B';
+        ctx.fillStyle = '#00897B';
+        ctx.lineWidth = 3;
+        const arrowStartX = 50, arrowEndX = 350, arrowY = 300;
+
+        // 主線
+        ctx.beginPath();
+        ctx.moveTo(arrowStartX, arrowY);
+        ctx.lineTo(arrowEndX, arrowY);
+        ctx.stroke();
+
+        // 繪製箭頭函數（帶圓角效果）
+        function drawLivelyArrowhead(x, y, angle) {
+        const headLength = 12;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - headLength * Math.cos(angle - Math.PI / 5), y - headLength * Math.sin(angle - Math.PI / 5));
+        ctx.lineTo(x - headLength * Math.cos(angle), y - headLength * Math.sin(angle));
+        ctx.lineTo(x - headLength * Math.cos(angle + Math.PI / 5), y - headLength * Math.sin(angle + Math.PI / 5));
+        ctx.closePath();
+        ctx.fill();
+        }
+        // 右側箭頭 (指向右方)
+        drawLivelyArrowhead(arrowEndX, arrowY, 0);
+        // 左側箭頭 (指向左方)
+        drawLivelyArrowhead(arrowStartX, arrowY, Math.PI);
+        ctx.lineWidth = 1;
+
+        // -------------------------
+        // 加入文字 "Eva"：活潑風格
+        // -------------------------
+        ctx.font = 'bold 28px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#AD1457';
+        // 加入文字陰影
+        ctx.shadowColor = 'rgba(0,0,0,0.3)';
+        ctx.shadowOffsetX = 2;
+        ctx.shadowOffsetY = 2;
+        ctx.shadowBlur = 4;
+        ctx.fillText('Eva', canvas.width / 2, 370);
+        ctx.shadowColor = 'transparent';
+
+      // -------------------------
+      // PNG 下載功能
+      // -------------------------
+      const downloadBtn = document.getElementById('downloadBtn');
+      downloadBtn.addEventListener('click', function () {
+        const link = document.createElement('a');
+        link.download = 'robot_translation_eva.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    </script>
+  </body>
+
+</html>
