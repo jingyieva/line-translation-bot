@@ -1,7 +1,7 @@
 import Express from 'express';
 
 import { client as lineClient, lineMiddleware } from '#utils/lineBot.js'
-import { translate, getSupportLangs } from '#utils/translate.js'
+import { safeTranslate, getSupportLangs } from '#utils/translate.js'
 import { LINE_CHANNEL_CONFIG, MSG_KEYWORD_LIST } from '#constants/index.js';
 
 const apiWebhook = Express.Router();
@@ -30,12 +30,7 @@ async function handleEvent(event) {
 
     // check usage
     if (event.message.text === MSG_KEYWORD_LIST.USAGE) {
-        // const usageMsg = await checkTranslationUsage();
-
-        // return await lineClient.replyMessage({
-        //     replyToken: event.replyToken,
-        //     messages: [{ type: 'text', text: usageMsg }],
-        // });
+        // TODO
     }
 
     // check available language code
@@ -53,7 +48,7 @@ async function handleEvent(event) {
         // TODO
     }
 
-    const res = await translate({ text: event.message.text })
+    const res = await safeTranslate({ text: event.message.text })
     // use reply API
     return await lineClient.replyMessage({
         replyToken: event.replyToken,
