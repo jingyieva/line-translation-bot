@@ -12,7 +12,7 @@ const googleTranslator = new TranslateV2.Translate({
 /**
  * [DeepL utils]
  */
-const translateByDeepL = async ({ text, sourceLang = 'ZH-HANT', targetLang = 'EN-US' }) => {
+const translateByDeepL = async ({ text, sourceLang = 'ZH', targetLang = 'EN-US' }) => {
     // deepL
     const result = await deepLTranslator.translateText(text, sourceLang, targetLang);
     console.log(`translation result: ${result.text}`)
@@ -68,7 +68,7 @@ export async function googleDetect(text) {
 
 export async function googleGetLanguages() {
     const [langs] = await googleTranslator.getLanguages();
-    const res = languages.reduce((prev, cur) => ({
+    const res = langs.reduce((prev, cur) => ({
         ...prev,
         [`${cur.code}`]: cur.name
     }), {});
