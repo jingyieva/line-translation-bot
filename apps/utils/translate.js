@@ -1,5 +1,5 @@
 import * as deepl from 'deepl-node';
-import { v2 as TranslateV2 } from '@google-cloud/translate';
+import { v2 as TranslateV2, TranslationServiceClient } from '@google-cloud/translate';
 
 import { TRANSLATE_AUTH_TOKEN, GOOGLE_PROJECT_ID } from '#constants/index.js';
 
