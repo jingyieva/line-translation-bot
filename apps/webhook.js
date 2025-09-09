@@ -10,14 +10,21 @@ const apiWebhook = Express.Router();
 // about the middleware, please refer to doc
 apiWebhook.post('/translate',
     lineMiddleware(LINE_CHANNEL_CONFIG),
-    (req, res) => {
-        Promise
-            .all(req.body.events.map(handleEvent))
-            .then((result) => res.json(result))
-            .catch((err) => {
-                console.error(err);
-                res.status(500).end();
-            });
+    async (req, res) => {
+        try {
+            const events = req.body.events || [];
+            const results = [];
+            for (const ev of events) {
+                // 微延遲，幫助避開 per-user throttle
+                // 也可依需求調整到 150~300ms
+                await new Promise(r => setTimeout(r, 180));
+                results.push(await handleEvent(ev));
+            }
+            res.json(results);
+        } catch (err) {
+            console.error(err);
+            res.status(500).end();
+        }
     }
 );
 

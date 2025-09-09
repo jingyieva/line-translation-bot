@@ -68,41 +68,49 @@ export async function googleDetect(text) {
 
 export async function googleGetLanguages() {
     const [langs] = await googleTranslator.getLanguages();
-    return langs; // [{ language: 'en', name: 'English' }, ...]
+    const res = languages.reduce((prev, cur) => ({
+        ...prev,
+        [`${cur.code}`]: cur.name
+    }), {});
+    return res; // [{ language: 'en', name: 'English' }, ...]
 }
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 export async function safeTranslate({ text, target = 'en' }) {
+    let userTragetLang = target;
     if (!target) {
         const detected = await googleDetect(text).catch(() => null);
-        target = detected && detected.startsWith('zh') ? 'en' : 'zh-TW';
+        userTragetLang = detected && detected.startsWith('zh') ? 'en' : 'zh-TW';
     }
     try {
-        const g = await googleTranslate(text, target);
+        const g = await googleTranslate(text, userTragetLang);
         return { text: g, engine: 'google', target }
     } catch (err) {
         const code = err?.code || err?.status;
         const reason = err?.errors?.[0]?.reason;
         console.error('[google-translate-error]', { code, reason, msg: err?.message });
 
-        // 對 rate/quota/403 再試一次
-        if (code === 403 || code === 429 || code === 503 || reason?.includes('Limit')) {
-            await sleep(300 + Math.random() * 500);
-            try {
-                const g2 = await googleTranslate(text, target);
-                return { text: gF2, engine: 'google', target };
-            } catch (e) {
-                console.error('[google-translate-retry-error]', { msg: e?.message });
+        const shouldDirectFallback =
+            code === 403 && /userRateLimitExceeded/i.test(reason);
+        if (!shouldDirectFallback) {
+            // 只有在非 userRateLimitExceeded 的 429/503/一般 403 才退避重試一次
+            if (code === 429 || code === 503 || code === 403) {
+                await sleep(300 + Math.random() * 500);
+                try {
+                    const g2 = await googleTranslate(text, userTragetLang);
+                    return { text: g2, engine: 'google', userTragetLang };
+                } catch { }
             }
         }
+        // 其他錯誤或重試失敗都直接轉 DeepL
         try {
-            const dlTarget = mapToDeepLTarget(target);
-            const result = await deepLTranslator.translateText(text, dlTarget);
+            const dlTarget = mapToDeepLTarget(userTragetLang);
+            const result = await translateByDeepL({ text });
             return { text: result.text, engine: 'deepl', target: dlTarget };
         } catch (e2) {
             console.error('[deepl-translate-error]', { msg: e2?.message });
-            throw err; // 把原始錯拋回，讓上層決定回覆
+            return { text: '翻譯服務暫時忙碌，請稍後再試 🙏', engine: 'fallback', userTragetLang };
         }
     }
 }
