@@ -53,7 +53,7 @@ function mapToDeepLTarget(target) {
 }
 
 /**
- * [Google utils]
+ * [Google utils] v2
  */
 export async function googleTranslate(text, target) {
     const [res] = await googleTranslator.translate(text, target);
@@ -75,21 +75,52 @@ export async function googleGetLanguages() {
     return res; // [{ language: 'en', name: 'English' }, ...]
 }
 
+/**
+ * [Google Utils] v3
+ * @param {*} ms 
+ * @returns 
+ */
+const sa = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+const gTranslateV3 = new TranslationServiceClient({ credentials: sa });
+
+const parent = `projects/${GOOGLE_PROJECT_ID}/locations/global`;
+
+async function googleTranslateV3(text, target) {
+  const [resp] = await gTranslateV3.translateText({
+    parent,
+    contents: [text],
+    mimeType: 'text/plain',
+    targetLanguageCode: target, // e.g. 'zh-TW', 'en', 'ja'
+  });
+  return resp?.translations?.[0]?.translatedText || '';
+}
+
+async function googleDetectV3(text) {
+  const [resp] = await gTranslateV3.detectLanguage({
+    parent,
+    content: text,
+    mimeType: 'text/plain',
+  });
+  // 取最可能語言
+  return resp?.languages?.[0]?.languageCode || 'auto';
+}
+
+
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 export async function safeTranslate({ text, target = 'en' }) {
     let userTragetLang = target;
     if (!target) {
-        const detected = await googleDetect(text).catch(() => null);
+        const detected = await googleDetectV3(text).catch(() => null);
         userTragetLang = detected && detected.startsWith('zh') ? 'en' : 'zh-TW';
     }
     try {
-        const g = await googleTranslate(text, userTragetLang);
-        return { text: g, engine: 'google', target }
+        const g = await googleTranslateV3(text, userTragetLang);
+        return { text: g, engine: 'google-v3', target }
     } catch (err) {
         const code = err?.code || err?.status;
         const reason = err?.errors?.[0]?.reason;
-        console.error('[google-translate-error]', { code, reason, msg: err?.message });
+        console.error('[google-translate-v3-error]', { code, reason, msg: err?.message });
 
         const shouldDirectFallback =
             code === 403 && /userRateLimitExceeded/i.test(reason);
@@ -98,8 +129,8 @@ export async function safeTranslate({ text, target = 'en' }) {
             if (code === 429 || code === 503 || code === 403) {
                 await sleep(300 + Math.random() * 500);
                 try {
-                    const g2 = await googleTranslate(text, userTragetLang);
-                    return { text: g2, engine: 'google', userTragetLang };
+                    const g2 = await googleTranslateV3(text, userTragetLang);
+                    return { text: g2, engine: 'google-v3', userTragetLang };
                 } catch { }
             }
         }
