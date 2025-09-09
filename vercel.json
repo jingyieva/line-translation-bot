@@ -2,13 +2,13 @@
   "functions": {
     "api/index.js": {
       "runtime": "nodejs20.x",
-      "maxDuration": 10,
-      "regions": ["hkg1", "sin1", "icn1", "tyo1"]
+      "maxDuration": 10
     }
-  },
-  "routes": [
-    { "src": "^/webhook/translate/?$", "methods": ["POST"], "dest": "/api/index.js" },
-    { "src": "^/translate/?$", "methods": ["POST"], "dest": "/api/index.js" },
-    { "src": "^/translate/(.*)$", "dest": "/api/index.js" }
+    },
+    "regions": ["hkg1", "sin1", "icn1", "tyo1"],
+    "routes": [
+        { "src": "^/webhook/translate/?$", "methods": ["POST"], "dest": "/api/index.js" },
+        { "src": "^/translate/?$", "methods": ["POST"], "dest": "/api/index.js" },
+        { "src": "^/translate/(.*)$", "dest": "/api/index.js" }
   ]
 }
