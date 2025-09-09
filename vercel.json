@@ -5,10 +5,6 @@
             "maxDuration": 10
         }
     },
-    "regions": [
-        "hnd1",
-        "hkg1"
-    ],
     "routes": [
         {
             "src": "^/webhook/translate/?$",
