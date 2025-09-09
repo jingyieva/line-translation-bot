@@ -1,5 +1,5 @@
 import Express from 'express';
-import { translate, getSupportLangs } from '#utils/translate.js';
+import { safeTranslate , getSupportLangs } from '#utils/translate.js';
 
 const apiTranslate = Express.Router().use(Express.json());
 
@@ -11,7 +11,7 @@ apiTranslate.get('/languages',
 apiTranslate.post('/',
     (req, res) => {
         const { text, lang: userTragetLang } = req.body;
-        Promise.resolve(translate({ text, userTragetLang })).then((result => res.json(result)))
+        Promise.resolve(safeTranslate({ text, userTragetLang })).then((result => res.json(result)))
     }
 );
 
